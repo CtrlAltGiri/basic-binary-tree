@@ -1,4 +1,4 @@
-#include "pwcTreeConstruction.h"
+#include "binaryTreeConstruction.h"
 
 using namespace std;
 
