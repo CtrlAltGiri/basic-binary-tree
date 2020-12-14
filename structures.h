@@ -5,6 +5,11 @@
 #include <climits>
 #include <ctime>
 #include <bitset>
+#include <iostream>
+#include <map>
+#include <fstream>
+#include <algorithm>
+#include <vector>
 
 #define MAX_LIMIT 700    // defines the maximum number of products in a transaction.
 #define NO_BITS 1000

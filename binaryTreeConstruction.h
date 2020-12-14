@@ -1,8 +1,3 @@
-#include <iostream>
-#include <map>
-#include <fstream>
-#include <algorithm>
-#include <vector>
 #include "structures.h"
 
 using namespace std;
@@ -60,7 +55,6 @@ void moveNonFactorsright(NODE newNode, NODE traverse, bitset<NO_BITS> bitValue){
 			traverse -> right = NULL;
 			newNodeRights = traverse;
 			traverse = prev -> right;
-			// prev remains the same
 		}
 		else{
 			prev = prev -> right;
@@ -69,7 +63,7 @@ void moveNonFactorsright(NODE newNode, NODE traverse, bitset<NO_BITS> bitValue){
 	}
 }
 
-void insertIntoTree(NODE root, bitset<NO_BITS> bitValue, vector<int>values, int count){
+void insertIntoTree(NODE root, bitset<NO_BITS> bitValue){
 
 	// FIRST NODE
 	if(root -> child == NULL){
@@ -234,7 +228,7 @@ NODE PWCTreeConstruction(int rows, int &insertedRows){
 			cout << i << ',';
 		}
 
-		insertIntoTree(root, bitValue, data, cols);
+		insertIntoTree(root, bitValue);
 
 	}
 	free(line);
