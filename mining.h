@@ -2,7 +2,17 @@
 
 using namespace std;
 
-/*void findAllCombinations(int* arr, int size, int reqLen, vector<vector<int>> &allCombinations, int start, int currLen, vector<bool> check){
+void findFactorsNode(vector<int> &arr, int &n, bitset<NO_BITS> bitValue){
+
+    for(int i = 0; i < NO_BITS; i++){
+        if(bitValue.test(i)){
+            arr.push_back(i);
+        }
+    }
+    n = arr.size();
+}
+
+void findAllCombinations(vector<int> arr, int size, int reqLen, vector<vector<int>> &allCombinations, int start, int currLen, vector<bool> check){
 
 	if(currLen > reqLen){
 		return;
@@ -33,7 +43,7 @@ using namespace std;
 	findAllCombinations(arr, size, reqLen, allCombinations, start + 1, currLen, check);
 }
 
-void joinOperationPowerSet(vector<vector<int>> &combinationsSoFar, int* primesOfRoot, int n, map<vector<int>, int> &freqTable, unsigned int qty){
+void joinOperationPowerSet(vector<vector<int>> &combinationsSoFar, vector<int> primesOfRoot, int n, map<vector<int>, int> &freqTable, unsigned int qty){
 
     // Find all the combinations of the new node.
     vector<vector<int>> allCombinations;
@@ -71,28 +81,23 @@ void mineTree(NODE root, vector<vector<int>> combinationsSoFar, map<vector<int>,
         return;
     }
 
+    MemUsage += sizeof(root);
+
     int n = 0;
-    int *primesOfRoot = (int*) malloc(sizeof(int) * MAX_LIMIT);
-    findFactorsNode(primesOfRoot, &n, root);
-    sort(primesOfRoot, n);
+    vector<int> primesOfRoot;
+    findFactorsNode(primesOfRoot, n, root -> val);
+    sort(primesOfRoot.begin(), primesOfRoot.end());
 
     // Mine the right node
-    if(root -> flag == 'r'){
-        mineTree(findRightMost(root) -> RIGHT, combinationsSoFar, freqTable);
-    }
-    else{
-        mineTree(root -> RIGHT, combinationsSoFar, freqTable);
-    }
+    mineTree(root -> right, combinationsSoFar, freqTable);
 
     // Find the ultimate powerset + add to the freqTable
     joinOperationPowerSet(combinationsSoFar, primesOfRoot, n, freqTable, root -> qty);
 
     // Mine the child
-    mineTree(root -> CHILD, combinationsSoFar, freqTable);
-
-    free(primesOfRoot);
+    mineTree(root -> child, combinationsSoFar, freqTable);
 }
-*/
+
 
 void MemCalculate(NODE root){
 

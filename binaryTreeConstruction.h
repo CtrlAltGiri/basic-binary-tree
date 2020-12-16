@@ -229,6 +229,7 @@ NODE PWCTreeConstruction(int rows, int &insertedRows){
 		}
 
 		insertIntoTree(root, bitValue);
+        insertedRows++;
 
 	}
 	free(line);

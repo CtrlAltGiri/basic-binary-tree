@@ -25,7 +25,7 @@ int main(){
     map<vector<int>, int> freqTable;
     int rareRows = (rareThreshold * insertedRows) / 100;
     int freqRows = (freqThreshold * insertedRows) / 100;
-    // mineTree(root -> CHILD, vector<vector<int>>(), freqTable);
+    mineTree(root -> child, vector<vector<int>>(), freqTable);
 
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -46,7 +46,7 @@ int main(){
         if(i.second > freqRows){
             for(int j = 0; j < i.first.size(); j++){
                 // isPrime(i.first[j], &primePos);
-                frequent << primePos << ',';
+                frequent << i.first[j] << ',';
             }
             frequent << "COUNT = " << i.second << endl;
         }
@@ -54,7 +54,7 @@ int main(){
         else if(i.second > rareRows && i.second < freqRows){
             for(int j = 0; j < i.first.size(); j++){
                 // isPrime(i.first[j], &primePos);
-                rare << primePos << ',';
+                rare << i.first[j] << ',';
             }
             rare << "COUNT = " << i.second << endl;
         }

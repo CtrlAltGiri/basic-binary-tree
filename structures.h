@@ -12,7 +12,7 @@
 #include <vector>
 
 #define MAX_LIMIT 700    // defines the maximum number of products in a transaction.
-#define NO_BITS 1000
+#define NO_BITS 100
 #define fileName "Includes/test.csv"
 #define INT_MAX_FINAL 9007199254740991
 
