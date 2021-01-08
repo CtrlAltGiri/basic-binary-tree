@@ -21,33 +21,46 @@ NODE createNode(bitset<NO_BITS> bitValue, int qty, NODE child, NODE right){
 	return newNode;
 }
 
+
+
+
 int isDivisible(bitset<NO_BITS> bitValue, NODE root){
 	bitset<NO_BITS> tempValue = root -> val & bitValue;
+cout<<"\nCHeck: "<<tempValue<<"<-"<<root -> val<<" & "<<bitValue;
 	if(tempValue == root -> val || tempValue == bitValue){
 		if(bitValue == root -> val){
 			// Equal case
+			cout<<": Return -1\n";
 			return -1;
 		}
 		else{
 
-			if(bitValue < root -> val)
+			if(bitValue < root -> val){
 				// root -> val > bitValue
+				cout<<": Return 2\n";
 				return 2;
-			else
+			}
+			else{
+
 				// bitValue > root -> val
+				cout<<": Return 1\n";
 				return 1;
+			}
 		}
 	}
 	else{
+
 		// Not divisible
+		cout<<": Return 0\n";
 		return 0;
 	}
 }
 
 void moveNonFactorsright(NODE newNode, NODE traverse, bitset<NO_BITS> bitValue){
 
-	NODE prev = traverse, newNodeRights = newNode;
+	NODE prev = traverse, newNodeRights = newNode, childlist=traverse;
 	traverse = traverse -> right;
+	
 	while(traverse){
 		if(!isDivisible(bitValue, traverse)){
 			prev -> right = traverse -> right;
@@ -58,17 +71,26 @@ void moveNonFactorsright(NODE newNode, NODE traverse, bitset<NO_BITS> bitValue){
 		}
 		else{
 			prev = prev -> right;
+			traverse -> val= traverse -> val ^ bitValue;
+			newNode->qty+=traverse ->qty;
 			traverse = traverse -> right;
 		}
 	}
+	//newNode->child=childlist;
+		
 }
 
 void insertIntoTree(NODE root, bitset<NO_BITS> bitValue){
-
+static int noCount=0;
+noCount++;
+cout<<"\n insert transaction "<<noCount<<endl;
 	// FIRST NODE
 	if(root -> child == NULL){
 		NODE newNode = createNode(bitValue, 1, NULL, NULL);
 		root -> child = newNode;
+		
+		printf("\nthe first node bit is %d ",(int)(bitValue.to_ulong()));
+
 	}
 
 	else{
@@ -89,7 +111,10 @@ void insertIntoTree(NODE root, bitset<NO_BITS> bitValue){
 
 				else if(divisible == 1 && traverse -> child != NULL){
 					// IMP - removeFactorsArray(&values, &traverse, &count, 1);
-					prev -> child = traverse;
+					cout<<"\n 111:::"<<traverse -> val <<"^"<< bitValue;
+					bitValue= traverse -> val ^ bitValue;	
+					cout<<"===="<<bitValue<<endl;			//Added by SR
+					// CHECK - prev -> child = traverse;
 					prev = traverse;
 					traverse -> qty++;
 					traverse = traverse -> child;
@@ -99,17 +124,27 @@ void insertIntoTree(NODE root, bitset<NO_BITS> bitValue){
 				NODE newNode;
 			 	if(divisible == 1){
 					// IMP - removeFactorsArray(&values, &traverse, &count,1);	// remove from values.
+					//printf("\nthe node bit is %d ",(int)(bitValue.to_ulong()));
+					bitValue = traverse -> val ^ bitValue;				//Added by SR
 					prev -> child = traverse;
 					newNode = createNode(bitValue, 1, NULL, NULL);
 					traverse -> child = newNode;
+
+					cout<<"\n("<<bitValue<<")"<<"Child ("<<traverse->val<<")";
+
 					traverse -> qty++;
 					complete = 1;
+
 				}
 
 				else{
 					// IMP - removeFactorsArray(&values,&traverse,&count,2);	 // remove from traverse.
+					traverse -> val= traverse -> val ^ bitValue;				//Added by SR
 					newNode = createNode(bitValue, traverse -> qty + 1, traverse, NULL);
+
 					prev -> child = newNode;
+	
+cout<<"\n("<<bitValue<<")"<<"Child ("<<prev->val<<")";
 					moveNonFactorsright(newNode, traverse, bitValue);
 					complete = 1;
 				}
@@ -148,29 +183,42 @@ void insertIntoTree(NODE root, bitset<NO_BITS> bitValue){
 						case -1:
 							newNode = createNode(bitValue, 1, NULL, NULL);
 							traverse -> right = newNode;
+
+							cout<<"\n("<<bitValue<<")"<<"Right ("<<traverse->val<<")";
 							return;
 
 						case 1:
 							newNode = createNode(bitValue, 1, NULL, NULL);
 							newNode -> qty += travTemp -> qty;
 							traverse -> right = newNode;
+							
+							cout<<"\n("<<bitValue<<")"<<"Right ("<<traverse->val<<")";
 
+							//traverse -> val = traverse -> val ^ bitValue;				//added by SR
 							// IMP - removeCommonFactorsNodes(&travTemp, newNode);
+							travTemp->val=newNode->val^travTemp->val;
 							newNode -> child = travTemp;
+							cout<<" Child is "<<travTemp->val;
 
 							moveNonFactorsright(newNode, travTemp, bitValue);
+
 							return;
 
 						case 2:
 							travTemp -> qty++;
 							if(travTemp -> child == NULL){
+								bitValue = travTemp -> val ^ bitValue;
+								cout<<"\n("<<bitValue<<") to";	//added by SR
 								newNode = createNode(bitValue, 1, NULL, NULL); // create and add here.
 								// IMP - removeCommonFactorsNodes(&newNode, travTemp);
 								travTemp -> child = newNode;
+
+								cout<<" Transaction ("<<bitValue<<")"<<"Child ("<<travTemp->val<<")";
 								return;
 							}
 							else{
 								prev = travTemp;
+								bitValue = travTemp -> val ^ bitValue;					//added by SR
 								// IMP - removeFactorsArray(&values, &travTemp, &count, 1);
 								traverse = travTemp-> child;
 								continue;
@@ -198,7 +246,6 @@ NODE PWCTreeConstruction(int rows, int &insertedRows){
 	FILE* stream = fopen(fileName, "r");
     char *line = (char*)malloc(sizeof(char) * 10000);
 
-	unsigned int greaterThanPrev;
 	for(int i = 0; i < rows; i++){
 
 		if(fgets(line, 10000, stream) == NULL)
@@ -208,25 +255,21 @@ NODE PWCTreeConstruction(int rows, int &insertedRows){
 		char* tmp = strdup(line);
 
 		const char* tok = strtok(tmp, ",");
-		greaterThanPrev = 1;
+		
 		for (; tok && *tok; tok = strtok(NULL, ",\n")){
 			data[cols++] = atoi(tok);
-			if(greaterThanPrev){
-				if(greaterThanPrev < data[cols - 1])
-					greaterThanPrev = data[cols - 1];
-				else
-					greaterThanPrev = 0;
-			}
 		}
 
 		bitset<NO_BITS> bitValue;
-		for(int i = 0; i < cols; i++){
-			bitValue.set(data[i]);
-		}
 
-		if(i % 100 == 0){
-			cout << i << ',';
+		for(int k = 0; k < cols; k++){
+			bitValue.set(data[k]);
 		}
+if(i==3195)
+		cout<<bitValue.size();
+		/*if(i % 100 == 0){
+			cout << i << ',';
+		}*/
 
 		insertIntoTree(root, bitValue);
         insertedRows++;
