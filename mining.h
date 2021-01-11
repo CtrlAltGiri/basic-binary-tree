@@ -80,7 +80,7 @@ void mineTree(NODE root, vector<vector<int>> combinationsSoFar, map<vector<int>,
     if(!root){
         return;
     }
-
+	
     MemUsage += sizeof(root);
 
     int n = 0;
@@ -88,14 +88,25 @@ void mineTree(NODE root, vector<vector<int>> combinationsSoFar, map<vector<int>,
     findFactorsNode(primesOfRoot, n, root -> val);
     sort(primesOfRoot.begin(), primesOfRoot.end());
 
+NODE root1=root -> right;
+/*if(root1)
+cout<<"\nR: "<<root1->val;
+	//printf("\nR: %d",(int)(root1->val.to_ulong()));*/
+
     // Mine the right node
     mineTree(root -> right, combinationsSoFar, freqTable);
 
     // Find the ultimate powerset + add to the freqTable
     joinOperationPowerSet(combinationsSoFar, primesOfRoot, n, freqTable, root -> qty);
 
+NODE child1=root -> child;
+/*if(child1)
+cout<<"\nC: "<<child1->val;
+	//printf("\nR: %d",(int)(child1->val.to_ulong()));*/
     // Mine the child
     mineTree(root -> child, combinationsSoFar, freqTable);
+if(root->child!=NULL)
+	cout<<"\nC: "<<root->child->val<<" of R:"<<root->val;
 }
 
 
